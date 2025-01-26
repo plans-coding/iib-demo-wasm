@@ -1,11 +1,34 @@
-<html>
-    <head>
-        <script async type = "text/javascript" src = "https://cdn.jsdelivr.net/npm/php-wasm/php-tags.jsdelivr.mjs"></script>
-        <!--<script id = "input" src = "/test-input.json" type = "text/json"></script>-->
-        <script type = "text/php" src = "index.php" data-stdin = "#input" data-stdout = "#output" data-stderr = "#error"></script>
-    </head>
-    <body>
-        <div id = "output"></div>
-        <div id = "error"></div>
-    </body>
-</html>
+<script async type="text/javascript" src="https://cdn.jsdelivr.net/npm/php-wasm/php-tags.jsdelivr.mjs"></script>
+
+<script>
+  // Capture all query parameters (flags) from the URL
+  let url = new URL(window.location.href);
+  let params = new URLSearchParams(url.search);
+  
+  // Prepare a string that will be passed to PHP
+  let queryString = '';
+  
+  // Iterate over all parameters and build a query string for PHP
+  params.forEach((value, key) => {
+    queryString += `&${key}=${encodeURIComponent(value)}`;
+  });
+
+  // Create a generic PHP code to handle any query parameter
+  let phpCode = `<?php 
+    // Iterate through all query parameters
+    foreach (\$_GET as \$key => \$value) {
+        echo "Flag: \$key = \$value<br>";
+    }
+  ?>`;
+
+  // Run PHP-WASM with the query string appended
+  phpWasm.runPHP(phpCode + queryString)
+    .then(result => {
+        document.getElementById("output").innerHTML = result;
+    })
+    .catch(error => {
+        console.error("Error running PHP-WASM:", error);
+    });
+</script>
+
+<div id="output">Waiting for PHP output...</div>
