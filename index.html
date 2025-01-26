@@ -1,40 +1,11 @@
 <html>
     <head>
-        <script async type="text/javascript" src="https://cdn.jsdelivr.net/npm/php-wasm/php-tags.jsdelivr.mjs"></script>
-        <script>
-            async function runPHP() {
-                // Create a URLSearchParams instance and set the action parameter
-                const params = new URLSearchParams();
-                params.set('action', 'ja');
-
-                // Define the PHP code that mimics the behavior of the PHP file
-                const phpCode = `
-                    <?php
-                        $action = $_GET['action'] ?? '';
-                        if ($action === 'ja') {
-                            echo "Action JA triggered";
-                        } else {
-                            echo "No action";
-                        }
-                    ?>
-                `;
-                
-                // Initialize the PHP WebAssembly runtime
-                const php = await WebAssembly.instantiateStreaming(fetch('https://cdn.jsdelivr.net/npm/php-wasm/php.wasm'));
-
-                // Run the PHP code with the constructed URL parameters
-                const result = await php.run(phpCode, { url: `index.php?${params.toString()}` });
-
-                // Display the result in the output div
-                document.getElementById('output').innerText = result;
-            }
-
-            // Execute the PHP script on page load
-            window.onload = runPHP;
-        </script>
+        <script async type = "text/javascript" src = "https://cdn.jsdelivr.net/npm/php-wasm/php-tags.jsdelivr.mjs"></script>
+        <script id = "input" value = "ja" type = "text/json"></script>
+        <script type = "text/php" src = "index.php" data-action = "#input" data-stdout = "#output" data-stderr = "#error"></script>
     </head>
     <body>
-        <div id="output"></div>
-        <div id="error"></div>
+        <div id = "output"></div>
+        <div id = "error"></div>
     </body>
 </html>
